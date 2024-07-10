@@ -13,16 +13,13 @@ namespace ProEventos.API.Controllers
         private readonly DataContext _context;
        
         public EventoController(DataContext context)
-        {
-            _context = context;
-        }
+            => _context = context;
 
         [HttpGet]
         public IEnumerable<Evento> Get()
         {
             return _context.Eventos;
         }
-        
 
         [HttpGet("{id}")]
         public Evento Get(int id)
