@@ -1,14 +1,10 @@
-<h2>Eventos</h2>
-<hr>
+
+<app-pageTitle [pageTitle]="'Eventos'"></app-pageTitle>
 
 <div class="form-inline">
   <div class="form-group mb-2">
     <label class="mr-2">Filtro:</label>
-    <input
-      type="text"
-      class="form-control mr-2"
-      placeholder="buscar"
-      [(ngModel)]="listFilter">
+    <input type="text" class="form-control mr-2" placeholder="buscar" [(ngModel)]="listFilter">
   </div>
 </div>
 <table class="table table-striped">
@@ -16,6 +12,7 @@
     <tr>
       <th>
         <button type="button" class="btn btn-outline-light btn-sm" (click)="showImage()">
+          <i class="{{!showImg ? 'fa fa-eye' : 'fa fa-eye-slash'}}"></i>
           {{!showImg ? 'Exibir' : 'Ocultar'}}
         </button>
       </th>
@@ -39,15 +36,17 @@
           [style.margin.px]="marginImg"
         >
       </td>
-      <td>{{event.eventoId}}</td>
+      <td>{{event.id}}</td>
       <td>{{event.tema}}</td>
       <td>{{event.local}}</td>
-      <td>{{event.dataEvento}}</td>
+      <td>{{event.dataEvento | DateFormatPipe}}</td>
       <td>{{event.qtdPessoas}}</td>
-      <td>{{event.lote}}</td>
+      <td>{{event.lotes[0]?.nome}}</td>
       <td>
-        <button type="button" class="btn btn-primary btn-sm mr-2">Editar</button>
-        <button type="button" class="btn btn-danger btn-sm">excluir</button>
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary btn-sm mr-2" tooltip="Editar"><i class="fa fa-edit"></i></button>
+          <button type="button" class="btn btn-danger btn-sm" tooltip="Excluir"  (click)="openModal(template)"><i class="fa fa-trash"></i></button>
+        </div>
       </td>
     </tr>
   </tbody>
@@ -59,4 +58,14 @@
     </tr>
   </tfoot>
 </table>
+
+<!-- {{eventos |json}} -->
+
+<ng-template #template>
+  <div class="modal-body text-center">
+    <p>Tem certeza que quer excluir esse evento?</p>
+    <button type="button" class="btn btn-default" (click)="confirm()" >Sim</button>
+    <button type="button" class="btn btn-primary" (click)="decline()" >Não</button>
+  </div>
+</ng-template>
 
