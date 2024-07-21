@@ -1,71 +1,7 @@
 
-<app-pageTitle [pageTitle]="'Eventos'"></app-pageTitle>
+<app-pageTitle [pageTitle]="'Eventos'"
+               [iconClass]="'fa fa-calendar-alt'"
+               [listButton]="true">
+</app-pageTitle>
 
-<div class="form-inline">
-  <div class="form-group mb-2">
-    <label class="mr-2">Filtro:</label>
-    <input type="text" class="form-control mr-2" placeholder="buscar" [(ngModel)]="listFilter">
-  </div>
-</div>
-<table class="table table-striped">
-  <thead class="thead-dark">
-    <tr>
-      <th>
-        <button type="button" class="btn btn-outline-light btn-sm" (click)="showImage()">
-          <i class="{{!showImg ? 'fa fa-eye' : 'fa fa-eye-slash'}}"></i>
-          {{!showImg ? 'Exibir' : 'Ocultar'}}
-        </button>
-      </th>
-      <th>#</th>
-      <th>Tema</th>
-      <th>Local</th>
-      <th>Data</th>
-      <th>Qtd Pessoas</th>
-      <th>Lote</th>
-      <th>Opções</th>
-    </tr>
-  </thead>
-  <tbody *ngIf="events && events.length">
-    <tr *ngFor="let event of filteredEvents">
-      <td>
-        <img [collapse]="!showImg"
-              [isAnimated]="true"
-          src="/assets/{{event.imageURL}}"
-          alt=""
-          [style.width.px]="widthImg"
-          [style.margin.px]="marginImg"
-        >
-      </td>
-      <td>{{event.id}}</td>
-      <td>{{event.tema}}</td>
-      <td>{{event.local}}</td>
-      <td>{{event.dataEvento | DateFormatPipe}}</td>
-      <td>{{event.qtdPessoas}}</td>
-      <td>{{event.lotes[0]?.nome}}</td>
-      <td>
-        <div class="btn-group">
-          <button type="button" class="btn btn-primary btn-sm mr-2" tooltip="Editar"><i class="fa fa-edit"></i></button>
-          <button type="button" class="btn btn-danger btn-sm" tooltip="Excluir"  (click)="openModal(template)"><i class="fa fa-trash"></i></button>
-        </div>
-      </td>
-    </tr>
-  </tbody>
-  <tfoot *ngIf="!events.length">
-    <tr>
-      <td colspan="8" class="text-center">
-        <h4>Nenhum evento encontrado</h4>
-      </td>
-    </tr>
-  </tfoot>
-</table>
-
-<!-- {{eventos |json}} -->
-
-<ng-template #template>
-  <div class="modal-body text-center">
-    <p>Tem certeza que quer excluir esse evento?</p>
-    <button type="button" class="btn btn-default" (click)="confirm()" >Sim</button>
-    <button type="button" class="btn btn-primary" (click)="decline()" >Não</button>
-  </div>
-</ng-template>
-
+<router-outlet></router-outlet>
