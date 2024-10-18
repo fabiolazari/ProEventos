@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using ProEventos.Application.Interfaces;
 using ProEventos.Domain.Models;
 using ProEventos.Persistence.Intefaces;
+using ProEventos.Persistence.Models;
 
 namespace ProEventos.Application.Services
 {
@@ -72,13 +73,23 @@ namespace ProEventos.Application.Services
             }
         }
 
-        public async Task<Evento[]> GetAllEventosAsync(bool includePalestrantes = false)
+        public async Task<PageList<Evento>> GetAllEventosAsync(PageParams pageParams, bool includePalestrantes = false)
         {
             try
             {
-                var eventos = await _eventoRepository.GetAllEventosAsync(includePalestrantes);
+                var eventos = await _eventoRepository.GetAllEventosAsync(pageParams, includePalestrantes);
                 if (eventos == null)
                     return null;
+
+               /* var resultado = _mapper.Map<EventoDto[]>(eventos);
+                var resultado = _mapper.Map<PageList<EventoDto>>(eventos);
+
+                resultado.CurrentPage = eventos.CurrentPage;
+                resultado.TotalPages = eventos.TotalPages;
+                resultado.PageSize = eventos.PageSize;
+                resultado.TotalCount = eventos.TotalCount;
+
+                */
 
                 return eventos;
             }
@@ -87,7 +98,7 @@ namespace ProEventos.Application.Services
                 throw new Exception($"Error: {exception.Message}");
             }
         }
-
+/*
         public async Task<Evento[]> GetAllEventosByTemaAsync(string tema, bool includePalestrantes = false)
         {
             try
@@ -103,7 +114,7 @@ namespace ProEventos.Application.Services
                 throw new Exception($"Error: {exception.Message}");
             }
         }
-
+*/
         public async Task<Evento> GetEventoByIdAsync(int eventoId, bool includePalestrantes = false)
         {
             try

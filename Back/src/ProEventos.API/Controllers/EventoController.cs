@@ -4,8 +4,8 @@ using ProEventos.Application.Interfaces;
 using System.Threading.Tasks;
 using System;
 using Microsoft.AspNetCore.Http;
-using System.Net;
-using Microsoft.AspNetCore.Builder;
+using ProEventos.Persistence.Models;
+using ProEventos.API.Extensions;
 
 namespace ProEventos.API.Controllers
 {
@@ -19,13 +19,15 @@ namespace ProEventos.API.Controllers
             => _eventoService = eventoService;
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] bool includePalestrantes)
+        public async Task<IActionResult> Get([FromQuery] PageParams pagePrams, [FromQuery] bool includePalestrantes)
         {
             try
             {
-                var eventos = await _eventoService.GetAllEventosAsync(includePalestrantes);
+                var eventos = await _eventoService.GetAllEventosAsync(pagePrams, includePalestrantes);
                 if (eventos == null)
                     return NotFound("Nenhum evento encontrado");
+
+                Response.AddPagination(eventos.CurrentPage, eventos.PageSize, eventos.TotalCount, eventos.TotalPages);
 
                 return Ok(eventos);    
             }
@@ -52,7 +54,7 @@ namespace ProEventos.API.Controllers
             }
         }
         
-        [HttpGet("{tema}/tema")]
+   /*     [HttpGet("{tema}/tema")]
         public async Task<IActionResult> GetByTema(string tema, [FromQuery] bool includePalestrantes)
         {
             try
@@ -68,7 +70,7 @@ namespace ProEventos.API.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, $"Erro ao tentar recuperar eventos.  {exception.Message}");
             }
         }
-
+*/
         [HttpPost]
         public async Task<IActionResult> Post(Evento model)
         {

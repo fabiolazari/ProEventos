@@ -3,9 +3,9 @@ import { Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
-
 import { Evento } from '@app/models/Evento';
 import { EventoService } from '@app/services/evento.service';
+import { Pagination, PaginatedResult } from '@app/models/pagination';
 
 @Component({
   selector: 'app-evento-lista',
@@ -17,6 +17,7 @@ export class EventoListaComponent implements OnInit {
   modalRef?: BsModalRef;
   public events: Evento[] = [];
   public filteredEvents: Evento[] = [];
+  public pagination = {} as Pagination;
 
   public title = "Eventos";
   public widthImg = 120;
@@ -43,8 +44,7 @@ export class EventoListaComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.spinner.show();
-
+    this.pagination = { currentPage: 1, itemsPerPage: 2, totalItems: 1 } as Pagination;
     this.getEventos();
   }
 
@@ -53,9 +53,13 @@ export class EventoListaComponent implements OnInit {
   }
 
   public getEventos(): void {
-    this.eventoService.getEventos().subscribe({
-      next: (eventos: Evento[]) => {
-        this.events = this.filteredEvents = eventos
+    this.spinner.show();
+
+    this.eventoService.getEventos(this.pagination.currentPage, this.pagination.itemsPerPage).subscribe({
+      next: (paginatedResult: PaginatedResult<Evento[]>) => {
+        this.events = paginatedResult.result;
+        this.filteredEvents = this.events;
+        this.pagination = paginatedResult.pagination;
       },
       error: error => {
         this.spinner.hide();
@@ -76,6 +80,11 @@ export class EventoListaComponent implements OnInit {
   openModal(template: TemplateRef<any>, eventoId: number) {
     this.id = eventoId;
     this.modalRef = this.modalService.show(template, { class: 'modal-sm' });
+  }
+
+  public pageChanged(event): void {
+    this.pagination.currentPage = event.page;
+    this.getEventos(); //this.carregarEventos();
   }
 
   confirm(): void {
