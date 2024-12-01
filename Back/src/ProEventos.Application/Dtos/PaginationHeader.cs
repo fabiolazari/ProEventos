@@ -1,4 +1,4 @@
-namespace ProEventos.API.Models
+namespace ProEventos.Application.Dtos
 {
     public class PaginationHeader
     {

@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProEventos.Domain.Models
 {
@@ -10,6 +11,8 @@ namespace ProEventos.Domain.Models
         public DateTime? DataInicio { get; set; }
         public DateTime? DataFim { get; set; }
         public int Quantidade { get; set; }
+
+        [ForeignKey("EVENTO")]
         public int? EventoId { get; set; }
         public Evento Evento { get; set; }
     }

@@ -1,6 +1,6 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
-using ProEventos.API.Models;
+using ProEventos.Application.Dtos;
 
 namespace ProEventos.API.Extensions
 {

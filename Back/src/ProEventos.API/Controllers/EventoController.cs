@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ProEventos.Domain.Models;
 using ProEventos.Application.Interfaces;
 using System.Threading.Tasks;
 using System;
 using Microsoft.AspNetCore.Http;
 using ProEventos.Persistence.Models;
 using ProEventos.API.Extensions;
+using ProEventos.Application.Dtos;
 
 namespace ProEventos.API.Controllers
 {
@@ -25,7 +25,7 @@ namespace ProEventos.API.Controllers
             {
                 var eventos = await _eventoService.GetAllEventosAsync(pagePrams, includePalestrantes);
                 if (eventos == null)
-                    return NotFound("Nenhum evento encontrado");
+                    return NoContent();
 
                 Response.AddPagination(eventos.CurrentPage, eventos.PageSize, eventos.TotalCount, eventos.TotalPages);
 
@@ -44,7 +44,7 @@ namespace ProEventos.API.Controllers
             {
                 var evento = await _eventoService.GetEventoByIdAsync(id, includePalestrantes);
                 if (evento == null)
-                    return NotFound("Evento encontrado");
+                    return NoContent();
 
                 return Ok(evento);    
             }
@@ -53,32 +53,32 @@ namespace ProEventos.API.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, $"Erro ao tentar recuperar o evento.  {exception.Message}");
             }
         }
-        
-   /*     [HttpGet("{tema}/tema")]
-        public async Task<IActionResult> GetByTema(string tema, [FromQuery] bool includePalestrantes)
-        {
-            try
-            {
-                var eventos = await _eventoService.GetAllEventosByTemaAsync(tema, includePalestrantes);
-                if (eventos == null)
-                    return NotFound("Nenhum evento encontrado");
 
-                return Ok(eventos);    
-            }
-            catch (Exception exception)
-            {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, $"Erro ao tentar recuperar eventos.  {exception.Message}");
-            }
-        }
-*/
+        /*     [HttpGet("{tema}/tema")]
+             public async Task<IActionResult> GetByTema(string tema, [FromQuery] bool includePalestrantes)
+             {
+                 try
+                 {
+                     var eventos = await _eventoService.GetAllEventosByTemaAsync(tema, includePalestrantes);
+                     if (eventos == null)
+                         return NoContent();
+
+                     return Ok(eventos);    
+                 }
+                 catch (Exception exception)
+                 {
+                     return this.StatusCode(StatusCodes.Status500InternalServerError, $"Erro ao tentar recuperar eventos.  {exception.Message}");
+                 }
+             }
+     */
         [HttpPost]
-        public async Task<IActionResult> Post(Evento model)
+        public async Task<IActionResult> Post(EventoDto model)
         {
             try
             {
                 var evento = await _eventoService.AddEvento(model);
                 if (evento == null)
-                    return BadRequest("Erro ao tentar adicionar evento.");
+                    return NoContent();
 
                 //return new ObjectResult(evento) { StatusCode = StatusCodes.Status201Created };
                 //return new ObjectResult(null) { StatusCode = StatusCodes.Status201Created };
@@ -91,13 +91,13 @@ namespace ProEventos.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, Evento model)
+        public async Task<IActionResult> Put(int id, EventoDto model)
         {
             try
             {
                 var evento = await _eventoService.UpdateEvento(id, model);
                 if (evento == null)
-                    return BadRequest("Erro ao tentar alterar evento.");
+                    return NoContent();
 
                 return NoContent();
             }
@@ -112,7 +112,13 @@ namespace ProEventos.API.Controllers
         {
             try
             {
-                return await _eventoService.DeleteEvento(id) ?  NoContent(): BadRequest("Erro ao tentar excluir evento.");
+                var evento = await _eventoService.GetEventoByIdAsync(id, true);
+                if (evento == null)
+                    return NoContent();
+                
+                return await _eventoService.DeleteEvento(id) 
+                    ?  Ok("Deletado")
+                    : throw new Exception("Ocorreu um problema específico ao tentar excluir evento.");
             }
             catch (Exception exception)
             {
