@@ -9,7 +9,7 @@ import { PaginatedResult } from '@app/models/pagination';
   //{ providedIn: 'root' }
 )
 export class EventoService {
-  baseURL = 'https://localhost:5001/api/evento';
+  baseURL = 'https://localhost:44379/api/evento';
 
 constructor(private http: HttpClient) { }
 
@@ -38,12 +38,29 @@ constructor(private http: HttpClient) { }
         })
       );
   }
-/*
+
   public getEventosByTema(tema: string): Observable<Evento[]> {
-    return this.http.get<Evento[]>(`${this.baseURL}/${tema}/tema`);
+    return this.http.get<Evento[]>(`${this.baseURL}/${tema}/tema`)
+    .pipe(take(1));
   }
-*/
+
   public getEventoById(id: number): Observable<Evento> {
-    return this.http.get<Evento>(`${this.baseURL}/${id}`);
+    return this.http.get<Evento>(`${this.baseURL}/${id}`)
+    .pipe(take(1));
+  }
+
+  public post(event: Evento): Observable<Evento> {
+    return this.http.post<Evento>(this.baseURL, event)
+    .pipe(take(1));
+  }
+
+  public put(event: Evento): Observable<Evento> {
+    return this.http.put<Evento>(`${this.baseURL}/${event.id}`, event)
+    .pipe(take(1));
+  }
+
+  public deleteEvent(id: number): Observable<any> {
+    return this.http.delete(`${this.baseURL}/${id}`)
+    .pipe(take(1));
   }
 }

@@ -50,7 +50,9 @@ namespace ProEventos.Persistence.Services
                             e.Local.ToLower().Contains(pageParams.Term.ToLower()))
                 .OrderBy(e => e.Id);
 
-            return await PageList<Evento>.CreateAsync(query, pageParams.PageNumber, pageParams.PageSize);
+            var ret = await PageList<Evento>.CreateAsync(query, pageParams.PageNumber, pageParams.PageSize);
+
+            return ret;
         }
 /*
         public async Task<PageList<Evento>> GetAllEventosByTemaAsync(PageParams pageParams, string tema, bool includePalestrantes = false)

@@ -7,8 +7,11 @@ import { Constants } from '../util/constants';
 })
 export class DateTimeFormatPipe extends DatePipe implements PipeTransform {
 
-  transform(value: any, args?: any): any {
-    return super.transform(value, Constants.DATE_TIME_FMT);
-  }
+  transform(value: any): any {
+    if (!value) return null;
+    const [day, month, year, time] = value.match(/(\d{2})\/(\d{2})\/(\d{4}) (\d{2}:\d{2}:\d{2})/)!.slice(1);
+    const isoDate = new Date(`${year}-${month}-${day}T${time}`);
 
+    return super.transform(isoDate, Constants.DATE_TIME_FMT) ?? 'data inválida...';
+  }
 }
